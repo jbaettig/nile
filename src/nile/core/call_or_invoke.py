@@ -10,7 +10,7 @@ from nile.utils import hex_address
 
 
 def call_or_invoke(
-    contract, type, method, params, network, signature=None, max_fee=None
+    contract, type, method, params, network, signature=None, max_fee=None, raw=False
 ):
     """Call or invoke functions of StarkNet smart contracts."""
     if isinstance(contract, account.Account):
@@ -44,6 +44,9 @@ def call_or_invoke(
     if len(params) > 0:
         command.append("--inputs")
         command.extend(params)
+
+    if raw:
+        command.append("--raw")
 
     if signature is not None:
         command.append("--signature")

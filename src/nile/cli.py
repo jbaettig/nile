@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Nile CLI entry point."""
+from email.policy import default
 import logging
 
 import click
@@ -89,9 +90,10 @@ def run(path, network):
 @network_option
 @click.option("--alias")
 @click.option("--abi")
-def deploy(artifact, arguments, network, alias, abi=None):
+@click.option("--raw", is_flag=True)
+def deploy(artifact, arguments, network, alias, raw, abi=None):
     """Deploy StarkNet smart contract."""
-    deploy_command(artifact, arguments, network, alias, abi=abi)
+    deploy_command(artifact, arguments, network, alias, abi=abi, raw=raw)
 
 
 @cli.command()
@@ -137,14 +139,15 @@ def send(signer, address_or_alias, method, params, network, max_fee=None):
 @click.argument("method", nargs=1)
 @click.argument("params", nargs=-1)
 @click.option("--max_fee", nargs=1)
+@click.option("--raw", is_flag=True)
 @network_option
-def invoke(address_or_alias, method, params, network, max_fee=None):
+def invoke(address_or_alias, method, params, network, raw, max_fee=None):
     """Invoke functions of StarkNet smart contracts."""
     if not is_alias(address_or_alias):
         address_or_alias = normalize_number(address_or_alias)
 
     out = call_or_invoke_command(
-        address_or_alias, "invoke", method, params, network, max_fee=max_fee
+        address_or_alias, "invoke", method, params, network, max_fee=max_fee, raw=raw
     )
     print(out)
 
@@ -153,12 +156,14 @@ def invoke(address_or_alias, method, params, network, max_fee=None):
 @click.argument("address_or_alias", nargs=1)
 @click.argument("method", nargs=1)
 @click.argument("params", nargs=-1)
+@click.option("--raw", is_flag=True)
 @network_option
-def call(address_or_alias, method, params, network):
+def call(address_or_alias, method, params, raw, network):
     """Call functions of StarkNet smart contracts."""
     if not is_alias(address_or_alias):
         address_or_alias = normalize_number(address_or_alias)
-    out = call_or_invoke_command(address_or_alias, "call", method, params, network)
+    out = call_or_invoke_command(address_or_alias, "call",
+                                 method, params, network, raw=raw)
     print(out)
 
 

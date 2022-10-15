@@ -49,7 +49,7 @@ def get_all_contracts(ext=None, directory=None):
 
 
 def run_command(
-    contract_name, network, overriding_path=None, operation="deploy", arguments=None
+    contract_name, network, overriding_path=None, operation="deploy", arguments=None, raw=False
 ):
     """Execute CLI command with given parameters."""
     base_path = (
@@ -61,6 +61,9 @@ def run_command(
     if arguments:
         command.append("--inputs")
         command.extend(prepare_params(arguments))
+
+    if raw:
+        command.append("--raw")
 
     if network == "mainnet":
         os.environ["STARKNET_NETWORK"] = "alpha-mainnet"

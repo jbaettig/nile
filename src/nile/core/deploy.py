@@ -6,7 +6,7 @@ from nile.common import ABIS_DIRECTORY, BUILD_DIRECTORY, parse_information, run_
 from nile.utils import hex_address
 
 
-def deploy(contract_name, arguments, network, alias, overriding_path=None, abi=None):
+def deploy(contract_name, arguments, network, alias, overriding_path=None, abi=None, raw=False):
     """Deploy StarkNet smart contracts."""
     logging.info(f"🚀 Deploying {contract_name}")
     base_path = (
@@ -14,7 +14,8 @@ def deploy(contract_name, arguments, network, alias, overriding_path=None, abi=N
     )
     register_abi = abi if abi is not None else f"{base_path[1]}/{contract_name}.json"
 
-    output = run_command(contract_name, network, overriding_path, arguments=arguments)
+    output = run_command(contract_name, network, overriding_path,
+                         arguments=arguments, raw=raw)
 
     address, tx_hash = parse_information(output)
     logging.info(
